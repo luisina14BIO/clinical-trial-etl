@@ -1,0 +1,22 @@
+# Datos originales y procesados
+
+data/raw/
+data/processed/
+
+# Entornos virtuales
+
+.venv/
+venv/
+
+# Variables de entorno y claves privadas
+
+.env
+
+# Archivos temporales de Python
+
+**pycache**/
+*.py[cod]
+
+# Archivos temporales de Jupyter
+
+.ipynb_checkpoints/
