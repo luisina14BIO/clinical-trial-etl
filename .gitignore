@@ -1,6 +1,5 @@
-# Datos originales y procesados
+# Datos procesados
 
-data/raw/
 data/processed/
 
 # Entornos virtuales
