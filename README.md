@@ -1,101 +1,91 @@
-# Clinical Trial ETL Pipeline 
+# Pipeline ETL de Ensayos Clínicos con SQLite
 
-## Descripción
+Proyecto de ETL (Extracción, Transformación y Carga) que procesa datos sintéticos de ensayos clínicos utilizando Python, pandas, SQL y SQLite. El pipeline extrae datos desde un archivo CSV, limpia y transforma los registros y persiste los resultados en una base de datos relacional.
 
-Proyecto de Data Science II que implementa un pipeline ETL (*Extract, Transform, Load*) para procesar un dataset de ensayos clínicos.
+## Objetivos del Proyecto
 
-El pipeline lee un archivo CSV, limpia y transforma los datos, y exporta el resultado en formato Parquet para facilitar su utilización en análisis de datos y futuros proyectos de Machine Learning.
+* Construir un pipeline ETL modular y reutilizable.
+* Limpiar y estandarizar datos de ensayos clínicos.
+* Definir un esquema de tabla relacional mediante restricciones SQL.
+* Persistir los datos transformados en SQLite.
+* Validar la integridad de los datos y la repetibilidad del pipeline.
 
-## Estructura del proyecto
+## Estructura del Proyecto
 
 ```text
 clinical-trial-etl/
-├── main.py
-├── requirements.txt
-├── README.md
-├── .gitignore
+├── data/
+│   ├── raw/
+│      └── synthetic_clinical_trial_data.csv  
+├── notebooks/
 ├── src/
-│   ├── __init__.py
 │   ├── extract.py
 │   ├── transform.py
 │   └── load.py
-├── data/
-│   ├── raw/
-│   └── processed/
-└── notebooks/
-    └── pipeline.testing.ipynb
+├── main.py
+├── schema.sql
+├── requirements.txt
+└── README.md
 ```
 
-## Tecnologías utilizadas
+## Flujo ETL
 
-* Python
-* Pandas
-* PyArrow
-* JupyterLab
+**1. Extracción**
 
-## Dataset
+Carga el conjunto de datos de origen desde un archivo CSV con 1.000 registros y 11 columnas.
 
-Se utiliza un dataset de ensayos clínicos almacenado en formato CSV.
+**2. Transformación**
 
-Archivo esperado:
+* Normaliza los nombres de las columnas utilizando el formato `snake_case` en minúsculas.
+* Convierte las fechas de inscripción al tipo datetime.
+* Elimina registros duplicados.
+* Gestiona los valores faltantes en columnas esenciales y no esenciales.
+* Optimiza los tipos de datos de las columnas de texto.
 
-`data/raw/synthetic_clinical_trial_data.csv`
+**3. Carga y persistencia**
 
-El archivo contiene 1.000 registros y 11 columnas relacionadas con participantes, tratamientos, variables clínicas y resultados del ensayo.
+* Crea la tabla `clinical_trials` utilizando el esquema SQL definido en `schema.sql`.
+* Aplica restricciones de integridad mediante una clave primaria, una restricción `NOT NULL` y una restricción `CHECK`.
+* Almacena los registros transformados en una base de datos SQLite.
+* Permite recargas completas y repetibles sin duplicar registros.
 
-El dataset original no se incluye en el repositorio. Para ejecutar el pipeline, es necesario obtener el archivo y colocarlo en la ruta indicada.
+## Validación de Datos
 
-## Etapas del pipeline
+Se realizaron pruebas para verificar:
 
-### 1. Extracción
+* La extracción, transformación y persistencia correctas de los 1.000 registros.
+* La ausencia de valores nulos después de la transformación.
+* La unicidad y ausencia de nulos en `subject_id`.
+* La creación correcta del esquema de la base de datos y sus restricciones.
+* La repetibilidad del pipeline en ejecuciones consecutivas, manteniendo los 1.000 registros.
 
-El módulo `src/extract.py` lee el archivo CSV y carga los datos en un DataFrame de Pandas.
+## Tecnologías Utilizadas
 
-### 2. Transformación
+* **Python 3.11:** desarrollo del pipeline.
+* **pandas 3.0.6:** manipulación y transformación de datos.
+* **SQLite:** almacenamiento y persistencia relacional.
+* **SQL:** definición del esquema y restricciones de integridad.
+* **JupyterLab:** pruebas y validación del pipeline.
+* **GitHub:** control de versiones.
 
-El módulo `src/transform.py` implementa las siguientes operaciones:
+## Cómo Ejecutar el Proyecto
 
-* Normalización de los nombres de las columnas.
-* Conversión de la fecha de inscripción al tipo de dato fecha.
-* Eliminación de registros duplicados.
-* Gestión de valores nulos mediante reglas definidas.
-* Optimización básica de memoria mediante tipos categóricos cuando corresponde.
+Clonar el repositorio y ubicarse en la carpeta raíz del proyecto.
 
-### 3. Carga
-
-El módulo `src/load.py` exporta los datos transformados a formato Parquet, conservando los tipos de datos y facilitando su lectura en tareas analíticas.
-
-## Instalación
-
-Se recomienda utilizar un entorno virtual de Python.
-
-Instalar las dependencias con:
+Instalar las dependencias necesarias:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Ejecución
-
-1. Colocar el archivo CSV en `data/raw/`.
-2. Instalar las dependencias.
-3. Ejecutar el pipeline desde la raíz del proyecto:
+Ejecutar el pipeline desde la raíz del proyecto:
 
 ```bash
 python main.py
 ```
 
-El archivo procesado se generará en:
+El pipeline crea la base de datos SQLite en `data/processed/clinical_trials.db` y muestra los resultados de cada etapa del proceso ETL.
 
-`data/processed/clinical_trial_clean.parquet`
+## Notas
 
-## Resultado de la ejecución
-
-En la prueba realizada, el pipeline procesó correctamente los 1.000 registros y las 11 columnas originales.
-
-No se detectaron duplicados ni valores nulos en el dataset utilizado. Los datos se exportaron correctamente a formato Parquet.
-
-## Autoría
-
-Proyecto académico desarrollado para la asignatura Data Science II de Coderhouse.
-
+El proyecto utiliza un conjunto de datos sintético de ensayos clínicos con fines educativos. La base de datos SQLite generada no se incluye en el repositorio, ya que se crea al ejecutar el pipeline.
