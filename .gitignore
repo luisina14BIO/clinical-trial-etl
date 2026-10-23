@@ -1,21 +1,18 @@
-# Datos procesados
+# Dataset procesado y base de datos generada
 
 data/processed/
 
-# Entornos virtuales
-
-.venv/
-venv/
-
-# Variables de entorno y claves privadas
+# Entorno y configuración local
 
 .env
+.venv/
+venv/
 
 # Archivos temporales de Python
 
 **pycache**/
 *.py[cod]
 
-# Archivos temporales de Jupyter
+# Configuración y archivos temporales de Jupyter
 
 .ipynb_checkpoints/
